@@ -19,8 +19,6 @@ func handleConnection(conn net.Conn) {
 		Connection: conn,
 		Message:    make(chan string),
 	}
-
-	_, _ = conn.Write([]byte("Enter your Username: "))
 	username, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
 		log.Error("Failed to read name: ", "error", err)
@@ -33,7 +31,7 @@ func handleConnection(conn net.Conn) {
 	clients[conn] = client
 	mu.Unlock()
 
-	broudcatMessage(fmt.Sprintf("\n"+"User %s joined the chat", client.Username), nil)
+	broudcatMessage(fmt.Sprintf("User %s joined the chat\n", client.Username), nil)
 
 	go getCLientMessage(client)
 
