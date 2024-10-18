@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"net"
 	"strings"
+	"time"
 )
 
 func handleConnection(conn net.Conn) {
@@ -25,9 +27,19 @@ func handleConnection(conn net.Conn) {
 	}
 
 	client.Username = strings.TrimSpace(username)
+	client.Join = time.Now()
 	mu.Lock()
 	clients[conn] = client
 	mu.Unlock()
 
+	broudcatMessage(fmt.Sprintf("User %s joined the chat", client.Username), nil)
+
 	go getCLientMessage(client)
+
+	for {
+		select {
+		case message := <-client.Message:
+			broudcatMessage(fmt.Sprintf("[%s]: %s", client.Username, message), conn)
+		}
+	}
 }
