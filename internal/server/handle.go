@@ -13,7 +13,7 @@ import (
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	log.Info("Client connected from:", conn.RemoteAddr())
+	log.Info("Client connected from:" + conn.RemoteAddr().String())
 
 	client := Client{
 		Connection: conn,

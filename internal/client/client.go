@@ -7,8 +7,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/log"
-
 	"github.com/joho/godotenv"
 )
 
@@ -20,6 +20,10 @@ var (
 	port     = os.Getenv("SERVER_PORT")
 )
 
+var (
+	name string
+)
+
 func main() {
 	conn, err := net.Dial(hostType, addr+":"+port)
 	if err != nil {
@@ -27,12 +31,12 @@ func main() {
 	}
 	defer conn.Close()
 
-	log.Info("Connected to the server at ", addr+":"+port)
+	log.Info("Connected to the server at " + addr + ":" + port)
+
+	huh.NewInput().Title("What’s your name?").Value(&name).Run()
 
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Enter your username: ")
-	scanner.Scan()
-	username := scanner.Text()
+	username := name
 
 	_, err = conn.Write([]byte(username + "\n"))
 	if err != nil {
