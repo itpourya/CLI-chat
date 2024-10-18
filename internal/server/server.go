@@ -1,12 +1,12 @@
 package main
 
 import (
-	"log"
 	"net"
 	"os"
 	"sync"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
 )
 
@@ -34,12 +34,12 @@ func main() {
 	defer listener.Close()
 
 	// Server start
-	log.Println("Server Started. Listening on: " + addr + ":" + port)
+	log.Info("Server Started. Listening on " + addr + ":" + port)
 
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Println("Failed accepting connections")
+			log.Error("Failed accepting connections")
 		}
 
 		go handleConnection(conn)

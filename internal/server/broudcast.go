@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
-	"log"
+	"fmt"
 	"net"
 	"strings"
+
+	"github.com/charmbracelet/log"
 )
 
 func getCLientMessage(client Client) {
@@ -12,7 +14,11 @@ func getCLientMessage(client Client) {
 	for {
 		message, err := reader.ReadString('\n')
 		if err != nil {
-			log.Println("Failed to get message: ", err)
+			if err.Error() == "EOF" {
+				log.Info(fmt.Sprintf("[%s] DISCONECTED !", client.Username))
+				return
+			}
+			log.Error("Failed to get message: ", "error", err)
 			return
 		}
 
@@ -31,7 +37,7 @@ func broudcatMessage(message string, sender net.Conn) {
 		if conn != sender {
 			_, err := conn.Write([]byte(message + "\n"))
 			if err != nil {
-				log.Println("Failed to broudcast message: ", err)
+				log.Error("Failed to broudcast message: ", "error", err)
 				return
 			}
 		}
